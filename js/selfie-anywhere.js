@@ -65,7 +65,7 @@ $("#webcam").bind("loadedmetadata", function () {
 
 function startDetectBody() {
     if(net == null){
-        $(".spinner-border").removeClass('d-none');
+        $(".spinner").show();
         bodyPix.load({
             architecture: 'MobileNetV1',
             outputStride: outputStride,
@@ -76,9 +76,9 @@ function startDetectBody() {
             console.log(error);
         })
         .then(objNet => {
-            $(".spinner-border").addClass('d-none');
+            $(".spinner").hide();
             net = objNet;
-            $("#canvasPerson").removeClass("d-none");
+            $("#canvasPerson").show();
             cameraFrame = detectBody();
         });
     }else{

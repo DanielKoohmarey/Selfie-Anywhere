@@ -31,6 +31,7 @@
  }
 
 .form-control.webcam-start{
+    font-family: sans-serif;
     position: absolute;
     margin-left: auto;
     margin-right: auto;
@@ -43,7 +44,7 @@
     text-shadow: 1px 1px #000;
     font-size: 1.2rem;
     width: 400px;
-    height: 55px;
+    height: 35px;
     z-index: 9999999;
     left: 0;
     right: 0;
@@ -182,7 +183,8 @@
     margin-left: -9999px;
   }
 
-  .spinner-border {
+  .spinner {
+    display: none;
     position: absolute;
     width: 150px;
     height: 150px;
@@ -193,10 +195,21 @@
     margin: auto;
     color: white;
     z-index:300000;
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
     filter: alpha(opacity=80);
     -moz-opacity: 0.8;
     opacity: 0.8;   
-  }
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+  
+  
 
 .cameraControls {
     position: absolute;
@@ -221,4 +234,10 @@
     margin: 0 10px;
 }
 
+.d-none {
+    display: none;
+}
 
+#webcam {
+    display: none;
+}

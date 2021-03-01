@@ -5,9 +5,9 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Selfie Anywhere</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">-->
     <link rel='stylesheet' type='text/css' media='screen' href='style/selfie-anywhere.css'>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>  
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
@@ -23,20 +23,19 @@
                         <label class="form-switch">
                         <input type="checkbox" id="webcam-switch">
                         <i></i> 
-                        <span id="webcam-caption">Click to Start Camera</span>
+                        <span id="webcam-caption">Required: Click to Start Camera</span>
                         </label>                        
                 </div>
-                <video id="webcam" autoplay playsinline width="640" height="480" style="display:none;"></video>
+                <video id="webcam" autoplay playsinline width="640" height="480"></video>
                 <div id="selfie-container">
                     <div id="background-container">
-                        <div class="spinner-border d-none" role="status">
-                            <span class="sr-only">Loading...</span>
+                        <div class="spinner" role="status">
                         </div>
                     </div>
                     <canvas id="canvasPerson" width="640" height="480"></canvas>
                 </div>
             </div>
-            <button id="fakeSelect" style="z-index:100;position:absolute;top:0;left:0;">Fake Select</button>
+            <button id="fakeSelect">Trigger Background Change</button>
         </div>
         
     <script src='js/selfie-anywhere.js'></script>
