@@ -3,38 +3,52 @@ const webcam = new Webcam(webcamElement, 'user');
 const canvasPerson = document.getElementById("canvasPerson");
 const multiplier = 0.75;
 const outputStride = 16;
-const segmentationThreshold = 0.5;
-const backgrounds = ["greatwall", "pyramid", "Colosseum", "monchu", "ayers-rock","taj", "easter-island", "moon"];
-const backgroundImagesPath =  'images/';
-const snapSound = new Audio('audio/snap.wav');
-//const backgroundImagesPath =  '/wp-content/uploads/2019/10/';
-//const snapSound = new Audio('/wp-content/uploads/2019/10/snap.wav');
-
+const segmentationThreshold = 0.75;
 const contextPerson = canvasPerson.getContext("2d");
 let net;
 let cameraFrame;
-let currentBGIndex = 0;
 let screenMode;
 
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+window.cancelAnimationFrame = (function(){
+    return  window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+})();
+
+
+// This callback is for the webcam switch.
+// If it is successful, we should hide the radio button
 $("#webcam-switch").change(function () {
     if(this.checked){
+        console.log('trying to enable cam');
         $('.md-modal').addClass('md-show');
-        webcam.start(false)
+        webcam.start(true)
             .then(result =>{
-               $('.flash').hide();
-               cameraStarted();
                console.log("webcam started");
+               $(".webcam-container").removeClass("d-none");
+               $("#webcam-control").hide();
                contextPerson.clearRect(0,0,canvasPerson.width,canvasPerson.height);
                screenMode = window.innerWidth > window.innerHeight? 'l' : 'p';
                
                cameraFrame = startDetectBody();
             })
             .catch(err => {
-                displayError();
+                console.log(err);
+                // set webcam 
+                alert('Failed to set webcam. Please ensure you are using a modern browser ');
+                $("#webcam-switch").prop('checked', false);
             });
     }
     else {        
-        cameraStopped(false, "selfie-anywhere-app");
         webcam.stop();
         cancelAnimationFrame(cameraFrame);
         contextPerson.clearRect(0,0,canvasPerson.width,canvasPerson.height);
@@ -50,32 +64,26 @@ $("#webcam").bind("loadedmetadata", function () {
 });
 
 function startDetectBody() {
-    webcam.stream()
-        .then(result => {
-            if(net == null){
-                $(".spinner-border").removeClass('d-none');
-                bodyPix.load({
-                    architecture: 'MobileNetV1',
-                    outputStride: outputStride,
-                    multiplier: multiplier,
-                    quantBytes: 2
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-                .then(objNet => {
-                    $(".spinner-border").addClass('d-none');
-                    net = objNet;
-                    $("#canvasPerson").removeClass("d-none");
-                    cameraFrame = detectBody();
-                });
-            }else{
-                $("#canvasPerson").removeClass("d-none");
-            }
+    if(net == null){
+        $(".spinner-border").removeClass('d-none');
+        bodyPix.load({
+            architecture: 'MobileNetV1',
+            outputStride: outputStride,
+            multiplier: multiplier,
+            quantBytes: 2
         })
-        .catch(err => {
-            displayError();
+        .catch(error => {
+            console.log(error);
+        })
+        .then(objNet => {
+            $(".spinner-border").addClass('d-none');
+            net = objNet;
+            $("#canvasPerson").removeClass("d-none");
+            cameraFrame = detectBody();
         });
+    }else{
+        $("#canvasPerson").removeClass("d-none");
+    }
 }
 
 function detectBody(){
@@ -123,6 +131,7 @@ function drawBody(personSegmentation)
         }
         imageObject.src=canvas.toDataURL();
     }else {
+        // assumes webcam height/width match canvas height/width
         contextPerson.drawImage(webcamElement, 0, 0, webcamElement.width, webcamElement.height);
         var imageData = contextPerson.getImageData(0,0, webcamElement.width, webcamElement.height);
         var pixel = imageData.data;
@@ -137,54 +146,8 @@ function drawBody(personSegmentation)
     }
 }
 
-$("#arrowLeft").click(function () {
-    if(currentBGIndex == 0){
-        currentBGIndex = backgrounds.length - 1;
-    }else{
-        currentBGIndex = currentBGIndex -1;
-    }
-    $('#selfie-anywhere-app').css('background-image', 'url('+ backgroundImagesPath + backgrounds[currentBGIndex] +'.jpg)');
-    $('#background-container').css('background-image', 'url('+ backgroundImagesPath + backgrounds[currentBGIndex] +'.jpg)');
-});
-
-$("#arrowRight").click(function () {
-    if(currentBGIndex == backgrounds.length - 1){
-        currentBGIndex = 0;
-    }else{
-        currentBGIndex = currentBGIndex +1;
-    }
-    $('#selfie-anywhere-app').css('background-image', 'url('+ backgroundImagesPath + backgrounds[currentBGIndex] +'.jpg)');
-    $('#background-container').css('background-image', 'url('+ backgroundImagesPath + backgrounds[currentBGIndex] +'.jpg)');
-});
-
-$("#take-photo").click(function () {
-    beforeTakePhoto();
-    var captureElement= document.getElementById('selfie-container');
-    var appendElement= document.getElementById('webcam-container');
-    html2canvas(captureElement).then(function(canvas) {
-        canvas.id='captureCanvas';
-        canvas.style.position = "absolute";
-        canvas.style.top = "0px";
-        canvas.style.left = "0px";
-        appendElement.appendChild(canvas);
-        document.querySelector('#download-photo').href = canvas.toDataURL('image/png');
-        webcam.stop();
-        cancelAnimationFrame(cameraFrame);
-        afterTakePhoto();
-    });
-});
-
-$("#resume-camera").click(function () {
-    webcam.stream()
-        .then(facingMode =>{
-            removeCapture();
-            contextPerson.clearRect(0,0,canvasPerson.width,canvasPerson.height);
-        });
-});
-
-$("#exit-app").click(function () {
-    removeCapture();
-    $("#webcam-switch").prop("checked", false).change();
+$("#fakeSelect").click(function () {
+    $('#background-container').css('background-image', 'url(images/pyramid.jpg)');
 });
 
 $(window).resize(function() {
@@ -192,12 +155,12 @@ $(window).resize(function() {
 });
 
 function screenModeChange(){
-    screenMode = window.innerWidth > window.innerHeight? 'l' : 'p';
+    /*screenMode = window.innerWidth > window.innerHeight? 'l' : 'p';
     if(screenMode == 'l'){
         canvasPerson.style.width = '100vw';
         canvasPerson.style.height = 'auto';
     }else {
         canvasPerson.style.width = window.innerWidth + 'px';
         canvasPerson.style.height = '100vh';
-    }
+    }*/
 }
