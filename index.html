@@ -19,19 +19,25 @@
 
         <div id="content">              
             <div id="webcam-container" class="webcam-container">
+                <div class="sk-folding-cube">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
                 <div class="form-control webcam-start" id="webcam-control">
-                        <label class="form-switch">
-                        <input type="checkbox" id="webcam-switch">
-                        <i></i> 
-                        <span id="webcam-caption">Required: Click to Start Camera</span>
-                        </label>                        
+                    <label class="form-switch">
+                    <input type="checkbox" id="webcam-switch">
+                    <i></i> 
+                    <span id="webcam-caption">Required: Click to Start Camera</span>
+                    </label>                        
                 </div>
                 <video id="webcam" autoplay playsinline width="640" height="480"></video>
-                <div id="selfie-container">
+                <!--<div id="selfie-container">-->
                     <div id="background-container">
-                        <div class="spinner" role="status">
-                        </div>
-                    </div>
+                        <!--<div class="spinner" role="status">
+                        </div>-->
+                    <!--</div>-->
                     <canvas id="canvasPerson" width="640" height="480"></canvas>
                 </div>
             </div>
