@@ -65,7 +65,7 @@ $("#webcam").bind("loadedmetadata", function () {
 
 function startDetectBody() {
     if(net == null){
-        $(".sk-folding-cube").show();
+        $(".sk-fading-circle").show();
         bodyPix.load({
             architecture: 'MobileNetV1',
             outputStride: outputStride,
@@ -76,7 +76,7 @@ function startDetectBody() {
             console.log(error);
         })
         .then(objNet => {
-            $(".sk-folding-cube").hide();
+            $(".sk-fading-circle").hide();
             net = objNet;
             $("#canvasPerson").show();
             cameraFrame = detectBody();
