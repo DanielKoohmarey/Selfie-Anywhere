@@ -147,7 +147,7 @@ function drawBody(personSegmentation)
 }
 
 $("#fakeSelect").click(function () {
-    $('#background-container').css('background-image', 'url(images/pyramid.jpg)');
+    $('#background-img').attr('src', 'images/pyramid.jpg');
 });
 
 $(window).resize(function() {
